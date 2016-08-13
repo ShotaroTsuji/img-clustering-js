@@ -17,14 +17,6 @@ onmessage = function(e) {
   postMessage({msg: 'result', data:result});
 };
 
-function l1Distance(u, v)
-{
-  return  Math.abs(u[0]-v[0])
-        + Math.abs(u[1]-v[1])
-        + Math.abs(u[2]-v[2])
-        + Math.abs(u[3]-v[3]);
-}
-
 function getRandomInt(min, max)
 {
   return Math.floor( Math.random() * (max - min + 1) ) + min;
@@ -123,7 +115,7 @@ PAM.prototype.execute = function(max_iter)
 
   for( var iter = 0 ; iter < max_iter ; iter++ )
   {
-    console.log("Iteration: ", iter);
+//    console.log("Iteration: ", iter);
     /* cluster assignment */
     for( var j = 0 ; j < this.k ; j++ )
     {

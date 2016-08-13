@@ -5,37 +5,35 @@ onmessage = function(e) {
 
 function segment_image(src, dst, k)
 {
-  var worker = new Worker("kmedoids.js");
+  var obj;
+  var N = src.width * src.height;
+  var data = new Array(N);
 
-  worker.postMessage({image:src, k: k, maxiter: 10});
-
-  worker.onmessage = function(e)
+  for( var i = 0 ; i < N ; i++ )
   {
-    if( e.data.msg == 'result' )
+    data[i] = new Uint8ClampedArray(src.data.buffer, i*4, 4);
+  }
+
+  importScripts("kmedoids.js");
+  obj = new PAM({data: data, k:k, distfunc: l1Distance});
+
+  var clusters = obj.execute(10);
+
+  for( var j = 0 ; j < k ; j++ )
+  {
+    for( var i = 0 ; i < clusters[j].indices.length ; i++ )
     {
-      var clusters = e.data.data;
+      var medoid = clusters[j].medoid;
+      var index = clusters[j].indices[i];
 
-      for( var j = 0 ; j < k ; j++ )
-      {
-        for( var i = 0 ; i < clusters[j].indices.length ; i++ )
-        {
-          var medoid = clusters[j].medoid;
-          var index = clusters[j].indices[i];
-
-          dst.data[index*4+0] = src.data[medoid*4+0];
-          dst.data[index*4+1] = src.data[medoid*4+1];
-          dst.data[index*4+2] = src.data[medoid*4+2];
-          dst.data[index*4+3] = src.data[medoid*4+3];
-        }
-      }
-
-      postMessage({msg: 'result', resultImage:dst});
-    }
-    else if( e.data.msg == 'progress' )
-    {
-      postMessage(e.data);
+      dst.data[index*4+0] = src.data[medoid*4+0];
+      dst.data[index*4+1] = src.data[medoid*4+1];
+      dst.data[index*4+2] = src.data[medoid*4+2];
+      dst.data[index*4+3] = src.data[medoid*4+3];
     }
   }
+
+  postMessage({msg: 'result', resultImage:dst});
 }
 
 function l1Distance(u, v)
