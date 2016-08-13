@@ -1,9 +1,9 @@
 onmessage = function(e) {
   console.log(e.data);
-  segment_image(e.data.originalImage, e.data.resultImage, e.data.numClusters);
+  segment_image(e.data.algorithm, e.data.originalImage, e.data.resultImage, e.data.numClusters);
 };
 
-function segment_image(src, dst, k)
+function segment_image(alg, src, dst, k)
 {
   var obj;
   var N = src.width * src.height;
@@ -14,22 +14,49 @@ function segment_image(src, dst, k)
     data[i] = new Uint8ClampedArray(src.data.buffer, i*4, 4);
   }
 
-  importScripts("kmedoids.js");
-  obj = new PAM({data: data, k:k, distfunc: l1Distance});
+  if( alg == 'kmedoids' )
+  {
+    importScripts("kmedoids.js");
+    obj = new PAM({data: data, k:k, distfunc: l1Distance});
+  }
+  else if( alg == 'kmeans' )
+  {
+    importScripts("kmeans.js");
+    obj = new Lloyd({data: data, k:k});
+  }
 
   var clusters = obj.execute(10);
 
-  for( var j = 0 ; j < k ; j++ )
+  if( alg == 'kmedoids' )
   {
-    for( var i = 0 ; i < clusters[j].indices.length ; i++ )
+    for( var j = 0 ; j < k ; j++ )
     {
-      var medoid = clusters[j].medoid;
-      var index = clusters[j].indices[i];
+      for( var i = 0 ; i < clusters[j].indices.length ; i++ )
+      {
+        var medoid = clusters[j].medoid;
+        var index = clusters[j].indices[i];
 
-      dst.data[index*4+0] = src.data[medoid*4+0];
-      dst.data[index*4+1] = src.data[medoid*4+1];
-      dst.data[index*4+2] = src.data[medoid*4+2];
-      dst.data[index*4+3] = src.data[medoid*4+3];
+        dst.data[index*4+0] = src.data[medoid*4+0];
+        dst.data[index*4+1] = src.data[medoid*4+1];
+        dst.data[index*4+2] = src.data[medoid*4+2];
+        dst.data[index*4+3] = src.data[medoid*4+3];
+      }
+    }
+  }
+  else if( alg == 'kmeans' )
+  {
+    for( var j = 0 ; j < k ; j++ )
+    {
+      for( var i = 0 ; i < clusters[j].indices.length ; i++ )
+      {
+        var centroid = clusters[j].centroid;
+        var index = clusters[j].indices[i];
+
+        dst.data[index*4+0] = centroid[0];
+        dst.data[index*4+1] = centroid[1];
+        dst.data[index*4+2] = centroid[2];
+        dst.data[index*4+3] = centroid[3];
+      }
     }
   }
 
@@ -68,3 +95,30 @@ function projDistance(u, v)
   return Math.acos(cosT);
 }
 
+var Cluster = function()
+{
+  this.medoid = -1;
+  this.centroid = [];
+  this.indices = [];
+}
+
+var Cluster = function(medoid)
+{
+  this.medoid = medoid;
+  this.indices = [];
+}
+
+Cluster.prototype.addIndex = function(index)
+{
+  this.indices.push(index);
+}
+
+Cluster.prototype.setCentroid = function(centroid)
+{
+  this.centroid = centroid;
+}
+
+Cluster.prototype.clearIndices = function()
+{
+  this.indices = [];
+}

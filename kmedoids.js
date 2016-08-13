@@ -1,22 +1,3 @@
-onmessage = function(e) {
-  console.log(e.data);
-  var src = e.data.image;
-
-  var N = src.width * src.height;
-  var data = new Array(N);
-
-  for( var i = 0 ; i < N ; i++ )
-  {
-    data[i] = new Uint8ClampedArray(src.data.buffer, i*4, 4);
-  }
-
-  var obj = new PAM({data: data, k:e.data.k, distfunc: l1Distance});
-
-  var result = obj.execute(e.data.maxiter);
-
-  postMessage({msg: 'result', data:result});
-};
-
 function getRandomInt(min, max)
 {
   return Math.floor( Math.random() * (max - min + 1) ) + min;

@@ -24,7 +24,23 @@ function init()
   resultcanvas = document.getElementById('resultCanvas');
   filterSize = 3;
   filterForm = document.getElementById('filterForm');
+  initAlgorithmSelector();
   createKmeansForm(filterForm);
+}
+
+function initAlgorithmSelector()
+{
+  var sel = document.getElementById('algorithmSelect');
+
+  var opt = document.createElement('option');
+  opt.setAttribute('value', 'kmeans');
+  opt.innerText = 'kmeans';
+  sel.appendChild(opt);
+
+  var opt = document.createElement('option');
+  opt.setAttribute('value', 'kmedoids');
+  opt.innerText = 'kmedoids';
+  sel.appendChild(opt);
 }
 
 function createKmeansForm(elem)
@@ -87,6 +103,7 @@ function applyFilter()
   filterInput.value = Math.floor(filterInput.value);
   if( filterInput.value < 2 ) filterInput.value = 2;
 */
+  var algsel = document.getElementById('algorithmSelect');
 
   var kmeansWorker = new Worker('clustering.js');
 
@@ -98,7 +115,7 @@ function applyFilter()
 //  kmeans(origImageData, resultImageData, filterInput.value);
 //  kmeansWorker.postMessage([origImageData, resultImageData, formParameters.k]);
   kmeansWorker.postMessage(
-    {algorithm: 'kmedoids',
+    {algorithm: algsel.options[algsel.selectedIndex].text,
      originalImage: origImageData,
      resultImage: resultImageData,
      numClusters: formParameters.k}
