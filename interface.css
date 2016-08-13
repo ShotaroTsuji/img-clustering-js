@@ -1,0 +1,30 @@
+.pagebody {
+	width: 80%;
+	border: 1px solid #000000;
+	margin: 0 auto;
+	padding: 5px;
+}
+
+.formContainer {
+	width: 80%;
+	padding: 1em 0;
+	margin: 0 auto;
+}
+
+.imageBoxContainer {
+}
+
+.imageBoxContainer ul {
+	list-style: none outside none;
+	width: 80%;
+	padding: 0;
+	margin: auto;
+}
+
+.imageBoxContainer ul li {
+	min-height: 400px;
+	margin: 5px;
+	border: 1px solid #000000;
+}
+
+
