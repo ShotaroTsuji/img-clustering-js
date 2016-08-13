@@ -1,0 +1,42 @@
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>File</title>
+  <script type="text/javascript" src="./interface.js"></script>
+  <link href="./interface.css" rel="stylesheet" type="text/css"></link>
+  <style type="text/css"></style>
+</head>
+<body onload="init()">
+
+<div class="pagebody">
+
+<div class="formContainer">
+  <input type="file" id="imageLoader" name="imageLoader"/>
+  <div id="filterForm">
+  <input type="button" onClick="applyFilter()" value="Apply" />
+  </div>
+
+  <div id="imageSize"></div>
+  <div id="elapsedTime"></div>
+</div>
+
+
+<div class="imageBoxContainer">
+  <ul>
+  <li id="sourceImage"></li>
+  <li id="resultImage"></li>
+  </ul>
+</div>
+
+<div>
+<canvas id="imageCanvas" style="display: none;"></canvas>
+<canvas id="resultCanvas" style="display: none;"></canvas>
+
+<canvas id="drawCanvas1" style="display: none;"></canvas>
+<canvas id="drawCanvas2" style="display: none;"></canvas>
+</div>
+
+</div>
+
+</body>
+</html>
