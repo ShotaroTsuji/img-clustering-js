@@ -88,7 +88,7 @@ function applyFilter()
   if( filterInput.value < 2 ) filterInput.value = 2;
 */
 
-  var kmeansWorker = new Worker('kmedoids.js');
+  var kmeansWorker = new Worker('clustering.js');
 
   var date1;
   var date2;
@@ -107,8 +107,6 @@ function applyFilter()
   kmeansWorker.onmessage = function(e)
   {
     date2 = new Date();
-
-    console.log(e);
 
     if( e.data.msg == 'result' )
     {
